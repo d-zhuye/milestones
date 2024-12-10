@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Milestones</title>
+</head>
+
+<body>
+    <div id="main-container">
+        <div id="main-nav">
+            <ul>
+                <li>Today</li>
+                <li>Tomorrow</li>
+                <li>This Week</li>
+            </ul>
+            <div>Projects</div>
+            <ul>
+                <li>Milestones</li>
+            </ul>
+        </div>
+        <section id="main-header">
+            <h1>Your Milestones</h1>
+            <button id="open-modal">New Task</button>
+            <form id="task-modal" class="modal hidden">
+                <div id="modal-header">
+                    <h2>New Task</h2>
+                    <button id="close-modal">&times;</button>
+                </div>
+                <label for="new-title">Title<input type="text" id="new-title" name="new-title" required /></label>
+                <div id="modal-priority">
+                    <label for="new-deadline">Deadline
+                        <input type="date" id="new-deadline" name="new-deadline" required /></label>
+                    <label for="new-priority">Priority
+                        <select id="new-priority">
+                            <option disabled selected value></option>
+                            <option value="low">&#10071;</option>
+                            <option value="medium">&#10071;&#10071;</option>
+                            <option value="high">&#10071;&#10071;&#10071;</option>
+                        </select>
+                    </label>
+                </div>
+                <label for="new-description">
+                    Description
+                    <textarea id="new-description" name="new-description" rows="5"></textarea>
+                </label>
+                <div id="modal-footer">
+                    <label for="project-select">Add To
+                        <select name="project-select" id="project-select">
+                            <option value="milestones" selected>Milestones</option>
+                        </select>
+                    </label>
+                    <button id="submit-form" type="submit">Submit</button>
+                </div>
+            </section>
+            <div class="overlay hidden"></div>
+        </section>
+        <div id="main-content">
+            <div>Content</div>
+        </div>
+    </div>
+</body>
+
+</html>
