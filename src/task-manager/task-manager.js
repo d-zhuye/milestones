@@ -1,4 +1,4 @@
-import deleteIcon from "../src/task-manager/delete-icon.svg"
+import deleteIcon from "./delete-icon.svg";
 
 class User {
   constructor(username) {
@@ -19,10 +19,6 @@ class Project {
 
   pushToProjectTasks(task) {
     this.tasks.push(task);
-  }
-
-  removeFromProject(task) {
-
   }
 }
 
@@ -56,7 +52,6 @@ example.addDescription("This is an example description");
 toDo.pushToProjectTasks(example);
 newUser.pushToUserProjects(toDo);
 newUser.pushToUserProjects(exampleProject);
-console.log(newUser);
 
 function newParagraph(content, classList, parentContainer) {
   const p = document.createElement("p");
@@ -143,6 +138,14 @@ function appendProjects() {
   });
 }
 
+const newProjectForm = document.getElementById("new-project-form");
+newProjectForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const newProjectName = document.getElementById("new-project-name").value;
+  const newProject = new Project(newProjectName);
+  newUser.pushToUserProjects(newProject);
+})
+
 const newTaskForm = document.getElementById("form-modal");
 newTaskForm.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -155,7 +158,6 @@ newTaskForm.addEventListener("submit", (event) => {
   const selectElement = document.getElementById("project-select").value;
 
   const selectedProject = newUser.projects.find((project) => {
-    console.log(project);
     return project.name === selectElement;
   });
 
@@ -165,3 +167,5 @@ newTaskForm.addEventListener("submit", (event) => {
 });
 
 appendProjects();
+
+export {newUser};
