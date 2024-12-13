@@ -6,19 +6,6 @@ class Storage {
 
 const projectsLibrary = new Storage("projectsLibrary")
 
-/*
-class User {
-  constructor(username) {
-    this.username = username;
-    this.projects = [];
-  }
-
-  pushToUserProjects(project) {
-    this.projects.push(project);
-  }
-}
-*/
-
 class Project {
   constructor(name) {
     this.name = name;
