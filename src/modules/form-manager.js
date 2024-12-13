@@ -12,10 +12,6 @@ function activateProjectForm() {
     newProjectForm.reset();
   });
 }
-console.log(typeof projectsLibrary.library);
-console.log(projectsLibrary.library);
-
-
 
 function activateTaskForm() {
   const newTaskForm = document.getElementById("form-modal");
@@ -42,6 +38,7 @@ function activateTaskForm() {
     newTaskForm.reset();
   });
 }
+
 
 activateProjectForm();
 activateTaskForm();
