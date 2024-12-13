@@ -7,7 +7,7 @@ function activateProjectForm() {
     event.preventDefault();
     const newProjectName = document.getElementById("new-project-name").value;
     const newProject = new Project(newProjectName);
-    projectsLibrary.push(newProject);
+    projectsLibrary.library.push(newProject);
     populateStorage(projectsLibrary);
     newProjectForm.reset();
   });
@@ -39,7 +39,5 @@ function activateTaskForm() {
   });
 }
 
-
 activateProjectForm();
 activateTaskForm();
-populateStorage(projectsLibrary);
