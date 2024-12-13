@@ -126,16 +126,16 @@ textarea {
 .modal {
   background-color: white;
   width: clamp(400px, 60vw, 700px);
-
-  position: absolute;
+  position: fixed;
   padding: 20px 30px;
   border-radius: 10px;
   margin-left: auto;
   margin-right: auto;
   top: 15%;
-  left: 0;
-  right: 0;
-  z-index: 5;
+    left: 0;
+    right: 0;
+    z-index: 5;
+
 }
 
 #form-header {
@@ -145,13 +145,14 @@ textarea {
 }
 
 .overlay {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(3px);
+  z-index: 3;
 }
 
 .hidden {

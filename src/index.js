@@ -1,19 +1,9 @@
-import "./reset.css";
+import "./modules/reset.css";
 import "./styles.css";
+import { default as modalControl} from "./modules/modal-control.js";
+import "./modules/task-manager.js";
+import "./modules/task-styles.css";
+import "./modules/form-manager.js";
+import "./modules/DOM.js";
 
-const openModalBtn = document.getElementById("open-modal");
-const modal = document.getElementById("task-modal");
-const overlay = document.querySelector(".overlay");
-
-openModalBtn.addEventListener("click", (event) => {
-    event.stopPropagation();
-    modal.classList.remove("hidden");
-    overlay.classList.remove("hidden");
-})
-
-const closeModal = document.getElementById("close-modal");
-closeModal.addEventListener("click", (event) => {
-    event.stopPropagation();
-    modal.classList.add("hidden");
-    overlay.classList.add("hidden");
-})
+modalControl();
