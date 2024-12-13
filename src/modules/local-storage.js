@@ -20,9 +20,10 @@ function storageAvailable(type) {
 }
 
 export function populateStorage() {
-  if (storageAvailable) {
-    localStorage.setItem("projects-library", JSON.stringify(projectsLibrary.library));
+  if (storageAvailable("localStorage")) {
+    localStorage.setItem("projects-library", JSON.stringify(projectsLibrary));
   }
   
   appendProjects();
 }
+
