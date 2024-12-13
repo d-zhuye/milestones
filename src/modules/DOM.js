@@ -1,10 +1,9 @@
 import deleteIcon from "../assets/delete-icon.svg";
 import { displayTaskModal } from "./modal-control";
 import { projectsLibrary } from "./task-manager";
-
+import { populateStorage } from "./local-storage";
 
 export function appendProjects() {
-
   const storedProjects = JSON.parse(localStorage.getItem("projects-library"));
   projectsLibrary.library = storedProjects.library;
   const projectsList = document.getElementById("projects-list");
@@ -12,21 +11,20 @@ export function appendProjects() {
   const projectSelect = document.getElementById("project-select");
   projectSelect.innerHTML = "";
 
-  // Append each project to projects-list 
+  // Append each project to projects-list
   projectsLibrary.library.forEach((project) => {
     const newLi = document.createElement("li");
     newLi.textContent = project.name;
     newLi.classList.add("project");
     projectsList.appendChild(newLi);
 
-    // Append each project as an option to project-select 
+    // Append each project as an option to project-select
     const option = document.createElement("option");
     option.value = project.name;
     option.textContent = project.name;
     projectSelect.appendChild(option);
-
   });
-  
+
   appendTasks();
 }
 
@@ -73,10 +71,8 @@ function appendTasks() {
       newParagraph(task.deadline, "task-deadline", taskContainer);
 
       // Add a deleteIconIMG
-      const deleteIconIMG = document.createElement("img");
-      deleteIconIMG.src = deleteIcon;
-      deleteIconIMG.classList.add("delete-icon");
-      taskContainer.appendChild(deleteIconIMG);
+      const deleteTaskIcon = deleteTask(task);
+      taskContainer.appendChild(deleteTaskIcon);
 
       taskContainer.addEventListener("click", (event) => {
         displayTaskModal(task);
@@ -85,3 +81,35 @@ function appendTasks() {
     });
   });
 }
+
+
+function deleteTask (deletedTask) {
+  const img = document.createElement("img");
+  img.src = deleteIcon;
+  img.classList.add("delete-icon");
+
+  img.addEventListener("click", (event) => {
+    event.stopPropagation();
+
+    // Return project containing deletedTask
+    const assignedProject = projectsLibrary.library.find((project) => {
+        return project.name == deletedTask.assignedProject;
+    })
+
+    // Return exact task  that matches deletedTask. 
+    const locatedTask = assignedProject.tasks.find((task) => {
+      return task === deletedTask;
+    })
+
+    // Locate project and task index
+    const projectIndex = projectsLibrary.library.indexOf(assignedProject);
+    const taskIndex = assignedProject.tasks.indexOf(locatedTask);
+
+    // Splice task and update localStorage
+    projectsLibrary.library[projectIndex].tasks.splice(taskIndex, 1);
+    populateStorage();
+
+  })
+  return img;
+}
+
