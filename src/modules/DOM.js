@@ -1,7 +1,12 @@
 import deleteIcon from "../assets/delete-icon.svg";
+import { displayTaskModal } from "./modal-control";
+import { projectsLibrary } from "./task-manager";
+
 
 export function appendProjects() {
-  const projectsLibrary = JSON.parse(localStorage.getItem("projects-library"));
+
+  const storedProjects = JSON.parse(localStorage.getItem("projects-library"));
+  projectsLibrary.library = storedProjects.library;
   const projectsList = document.getElementById("projects-list");
   projectsList.innerHTML = "";
   const projectSelect = document.getElementById("project-select");
@@ -21,7 +26,6 @@ export function appendProjects() {
     projectSelect.appendChild(option);
 
   });
-
   
   appendTasks();
 }
@@ -75,10 +79,9 @@ function appendTasks() {
       taskContainer.appendChild(deleteIconIMG);
 
       taskContainer.addEventListener("click", (event) => {
+        displayTaskModal(task);
         event.stopPropagation();
       });
     });
   });
 }
-
-appendProjects();
