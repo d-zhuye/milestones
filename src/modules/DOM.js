@@ -3,8 +3,16 @@ import { displayTaskModal } from "./modal-control";
 import { projectsLibrary } from "./task-manager";
 import { populateStorage } from "./local-storage";
 
+export let displayTracker = "Tasks";
+
+function changeMainHeader () {
+  const headerNameElement = document.getElementById("main-header-name");
+  headerNameElement.textContent = displayTracker;
+}
+
+
+// The below section handles appending projects and tasks onto webpage
 const listDisplay = document.getElementById("list-display");
-export let displayTracker = "displayAll";
 
 function iterateAndRenderTasks(project) {
   if (displayTracker === "Tasks") {
@@ -52,15 +60,17 @@ export function appendProjects() {
     newLi.addEventListener("click", (event) => {
       event.stopPropagation();
       displayTracker = project.name;
+      changeMainHeader();
       iterateAndRenderTasks(project);
     });
   });
 
-  if (displayTracker === "displayAll") {
+  if (displayTracker === "Tasks") {
     displayAllTasks();
   } else {
     displayByProject(displayTracker);
   }
+  changeMainHeader();
 }
 
 function newParagraph(content, classList, parentContainer) {
@@ -100,9 +110,17 @@ function appendTasks(task) {
   newParagraph(task.title, "task-title", taskContainer);
   newParagraph(task.deadline, "task-deadline", taskContainer);
 
-  // Add a deleteIconIMG
-  const deleteTaskIcon = deleteTask(task);
-  taskContainer.appendChild(deleteTaskIcon);
+  // Add delete icon
+  const icon = document.createElement("img");
+  icon.src = deleteIcon;
+  icon.classList.add("delete-icon");
+
+  icon.addEventListener("click", (event) => {
+    event.stopPropagation();
+    deleteTask(task);
+  })
+
+  taskContainer.appendChild(icon);
 
   taskContainer.addEventListener("click", (event) => {
     displayTaskModal(task);
@@ -112,7 +130,7 @@ function appendTasks(task) {
 
 export function displayAllTasks() {
   listDisplay.innerHTML = "";
-  displayTracker = "displayAll";
+  displayTracker = "Tasks";
   projectsLibrary.library.forEach((project) => {
     project.tasks.forEach((task) => {
       appendTasks(task);
@@ -120,14 +138,7 @@ export function displayAllTasks() {
   });
 }
 
-function deleteTask(deletedTask) {
-  const img = document.createElement("img");
-  img.src = deleteIcon;
-  img.classList.add("delete-icon");
-
-  img.addEventListener("click", (event) => {
-    event.stopPropagation();
-
+export function deleteTask(deletedTask) {
     // Return project containing deletedTask
     const assignedProject = projectsLibrary.library.find((project) => {
       return project.name == deletedTask.assignedProject;
@@ -149,6 +160,4 @@ function deleteTask(deletedTask) {
     // Splice task and update localStorage
     projectsLibrary.library[projectIndex].tasks.splice(taskIndex, 1);
     populateStorage();
-  });
-  return img;
 }
