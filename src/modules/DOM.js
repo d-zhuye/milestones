@@ -2,6 +2,7 @@ import deleteIcon from "../assets/delete-icon.svg";
 import { displayTaskModal } from "./modal-control";
 import { projectsLibrary } from "./task-manager";
 import { populateStorage } from "./local-storage";
+import {format} from "date-fns";
 
 export let displayTracker = "Tasks";
 
@@ -108,7 +109,9 @@ function appendTasks(task) {
 
   // Call on function factory to create new P
   newParagraph(task.title, "task-title", taskContainer);
-  newParagraph(task.deadline, "task-deadline", taskContainer);
+  console.log(task.deadline);
+  const deadlineFormatted = `${format(task.deadline, "eeee")} ${format(task.deadline, "PP")}`;
+  newParagraph(deadlineFormatted, "task-deadline", taskContainer);
 
   // Add delete icon
   const icon = document.createElement("img");
