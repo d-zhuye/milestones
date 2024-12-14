@@ -3,9 +3,33 @@ import { displayTaskModal } from "./modal-control";
 import { projectsLibrary } from "./task-manager";
 import { populateStorage } from "./local-storage";
 
+const listDisplay = document.getElementById("list-display");
+export let displayTracker = "displayAll";
+
+function iterateAndRenderTasks(project) {
+  if (displayTracker === "Tasks") {
+    displayAllTasks();
+    return
+  };
+  
+  listDisplay.innerHTML = "";
+  project.tasks.forEach((task) => {
+    appendTasks(task);
+  });
+}
+
+function displayByProject(projectName) {
+  const projectsLibrary = JSON.parse(localStorage.getItem("projects-library"));
+
+  const displayedProject = projectsLibrary.library.find((storedProject) => {
+    return storedProject.name === projectName;
+  });
+
+  iterateAndRenderTasks(displayedProject);
+}
+
 export function appendProjects() {
-  const storedProjects = JSON.parse(localStorage.getItem("projects-library"));
-  projectsLibrary.library = storedProjects.library;
+  const projectsLibrary = JSON.parse(localStorage.getItem("projects-library"));
   const projectsList = document.getElementById("projects-list");
   projectsList.innerHTML = "";
   const projectSelect = document.getElementById("project-select");
@@ -23,9 +47,20 @@ export function appendProjects() {
     option.value = project.name;
     option.textContent = project.name;
     projectSelect.appendChild(option);
+
+    // Listen Event. Display Own Tasks When Clicked
+    newLi.addEventListener("click", (event) => {
+      event.stopPropagation();
+      displayTracker = project.name;
+      iterateAndRenderTasks(project);
+    });
   });
 
-  appendTasks();
+  if (displayTracker === "displayAll") {
+    displayAllTasks();
+  } else {
+    displayByProject(displayTracker);
+  }
 }
 
 function newParagraph(content, classList, parentContainer) {
@@ -35,55 +70,57 @@ function newParagraph(content, classList, parentContainer) {
   parentContainer.appendChild(p);
 }
 
-function appendTasks() {
-  const projectsLibrary = JSON.parse(localStorage.getItem("projects-library"));
-  const listDisplay = document.getElementById("list-display");
+function appendTasks(task) {
+  const taskContainer = document.createElement("div");
+  taskContainer.classList.add("task-container");
+  listDisplay.appendChild(taskContainer);
+
+  // Adds a checkbox. If isChecked property is true, then checkbox spawns as
+  // true. Adds event listener to toggle between isChecked and Strikethrough
+  const checkBox = document.createElement("input");
+  checkBox.type = "checkbox";
+  checkBox.classList.add("checkbox");
+  if (task.isChecked) {
+    checkBox.checked = true;
+    taskContainer.classList.add("strike-through");
+  }
+  taskContainer.appendChild(checkBox);
+  checkBox.addEventListener("click", (event) => {
+    event.stopPropagation();
+    if (checkBox.checked) {
+      task.isChecked = true;
+      taskContainer.classList.add("strike-through");
+    } else {
+      task.isChecked = false;
+      taskContainer.classList.remove("strike-through");
+    }
+  });
+
+  // Call on function factory to create new P
+  newParagraph(task.title, "task-title", taskContainer);
+  newParagraph(task.deadline, "task-deadline", taskContainer);
+
+  // Add a deleteIconIMG
+  const deleteTaskIcon = deleteTask(task);
+  taskContainer.appendChild(deleteTaskIcon);
+
+  taskContainer.addEventListener("click", (event) => {
+    displayTaskModal(task);
+    event.stopPropagation();
+  });
+}
+
+export function displayAllTasks() {
   listDisplay.innerHTML = "";
+  displayTracker = "displayAll";
   projectsLibrary.library.forEach((project) => {
     project.tasks.forEach((task) => {
-      const taskContainer = document.createElement("div");
-      taskContainer.classList.add("task-container");
-      listDisplay.appendChild(taskContainer);
-
-      // Adds a checkbox. If isChecked property is true, then checkbox spawns as
-      // true. Adds event listener to toggle between isChecked and Strikethrough
-      const checkBox = document.createElement("input");
-      checkBox.type = "checkbox";
-      checkBox.classList.add("checkbox");
-      if (task.isChecked) {
-        checkBox.checked = true;
-        taskContainer.classList.add("strike-through");
-      }
-      taskContainer.appendChild(checkBox);
-      checkBox.addEventListener("click", (event) => {
-        event.stopPropagation();
-        if (checkBox.checked) {
-          task.isChecked = true;
-          taskContainer.classList.add("strike-through");
-        } else {
-          task.isChecked = false;
-          taskContainer.classList.remove("strike-through");
-        }
-      });
-
-      // Call on function factory to create new P
-      newParagraph(task.title, "task-title", taskContainer);
-      newParagraph(task.deadline, "task-deadline", taskContainer);
-
-      // Add a deleteIconIMG
-      const deleteTaskIcon = deleteTask(task);
-      taskContainer.appendChild(deleteTaskIcon);
-
-      taskContainer.addEventListener("click", (event) => {
-        displayTaskModal(task);
-        event.stopPropagation();
-      });
+      appendTasks(task);
     });
   });
 }
 
-
-function deleteTask (deletedTask) {
+function deleteTask(deletedTask) {
   const img = document.createElement("img");
   img.src = deleteIcon;
   img.classList.add("delete-icon");
@@ -93,13 +130,17 @@ function deleteTask (deletedTask) {
 
     // Return project containing deletedTask
     const assignedProject = projectsLibrary.library.find((project) => {
-        return project.name == deletedTask.assignedProject;
-    })
+      return project.name == deletedTask.assignedProject;
+    });
 
-    // Return exact task  that matches deletedTask. 
+    // Return exact task  that matches deletedTask. Used title and deadline
+    // criteria to circumvent error with finding match with exact object
     const locatedTask = assignedProject.tasks.find((task) => {
-      return task === deletedTask;
-    })
+      return (
+        task.title === deletedTask.title &&
+        task.deadline === deletedTask.deadline
+      );
+    });
 
     // Locate project and task index
     const projectIndex = projectsLibrary.library.indexOf(assignedProject);
@@ -108,8 +149,6 @@ function deleteTask (deletedTask) {
     // Splice task and update localStorage
     projectsLibrary.library[projectIndex].tasks.splice(taskIndex, 1);
     populateStorage();
-
-  })
+  });
   return img;
 }
-
