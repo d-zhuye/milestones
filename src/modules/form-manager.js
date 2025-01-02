@@ -1,5 +1,5 @@
 import { projectsLibrary, Project, Task } from "./task-manager.js";
-import { populateStorage} from "./local-storage.js";
+import { populateStorage } from "./local-storage.js";
 
 function activateProjectForm() {
   const newProjectForm = document.getElementById("new-project-form");
@@ -23,16 +23,17 @@ function activateTaskForm() {
     newTask.priority = document.getElementById("new-priority").value;
     newTask.description = document.getElementById("new-description").value;
 
-    // Get selectedOption & storedProject. Update projectsLibrary with local 
-    // storage. Find project with matching name to selected Option. Push to 
+    // Get selectedOption & storedProject. Update projectsLibrary with local
+    // storage. Find project with matching name to selected Option. Push to
     // selectedProject.
     const selectedOption = document.getElementById("project-select").value;
     const storedProjects = JSON.parse(localStorage.getItem("projects-library"));
     projectsLibrary.library = storedProjects.library;
-    const selectedProject = projectsLibrary.library.find( (project) => {
+    const selectedProject = projectsLibrary.library.find((project) => {
       return project.name === selectedOption;
-    })
+    });
 
+    newTask.assignToProject(selectedProject.name);
     selectedProject.tasks.push(newTask);
     populateStorage();
     newTaskForm.reset();

@@ -10,9 +10,7 @@
     <div id="main-container">
       <div id="main-nav">
         <ul class="nav-ul">
-          <li>Today</li>
-          <li>Tomorrow</li>
-          <li>This Week</li>
+          <li id="today">Today</li>
         </ul>
         <ul id="projects-list" class="nav-ul"></ul>
         <form id="new-project-form">
@@ -28,7 +26,7 @@
         </form>
       </div>
       <section id="main-header">
-        <h1 id="main-header-name">Your Milestones</h1>
+        <h1 id="main-header-name"></h1>
         <button id="open-form">New Task</button>
         <form id="form-modal" class="modal hidden">
           <div id="form-header">
@@ -72,7 +70,6 @@
             </label>
             <button id="submit-form" type="submit">Submit</button>
           </div>
-          <div class="overlay hidden"></div>
         </form>
       </section>
       <div id="list-display"></div>
@@ -88,8 +85,9 @@
           aut esse delectus quisquam, saepe mollitia? Rerum molestias impedit a
           ex hic?
         </p>
-        <button class="delete-task">Delete Task</button>
+        <button id="delete-task">Delete Task</button>
       </section>
     </div>
+    <div class="overlay hidden"></div>
   </body>
 </html>

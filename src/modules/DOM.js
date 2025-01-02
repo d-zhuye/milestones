@@ -2,7 +2,7 @@ import deleteIcon from "../assets/delete-icon.svg";
 import { displayTaskModal } from "./modal-control";
 import { projectsLibrary } from "./task-manager";
 import { populateStorage } from "./local-storage";
-import {format} from "date-fns";
+import { zonedTimeToUtc, utcToZonedTime, format } from "date-fns";
 
 export let displayTracker = "Tasks";
 
@@ -11,9 +11,46 @@ function changeMainHeader () {
   headerNameElement.textContent = displayTracker;
 }
 
-
 // The below section handles appending projects and tasks onto webpage
 const listDisplay = document.getElementById("list-display");
+
+export function displayAllTasks() {
+  listDisplay.innerHTML = "";
+  displayTracker = "Tasks";
+  projectsLibrary.library.forEach((project) => {
+    project.tasks.forEach((task) => {
+      appendTasks(task);
+    });
+  });
+}
+
+function displayTodayTasks() {
+  const projectsLibrary = JSON.parse(localStorage.getItem("projects-library"));
+  const todaysTasks = [];
+  const date = new Date();
+  format(new Date(), "P");
+  console.log(projectsLibrary);
+  console.log(date);
+  projectsLibrary.library.forEach((project) => {
+    project.tasks.forEach((task) => {
+      const  deadlineFormatted = format(task.deadline, "P");
+      console.log(deadlineFormatted);
+      if (deadlineFormatted === date) {
+        todaysTasks.push(task);
+      }
+    })
+  })
+
+  iterateAndRenderTasks(todaysTasks);
+}
+
+(function initializeToday() {
+  const todayButton = document.getElementById("today");
+  todayButton.addEventListener("click", (e) => {
+    e.stopPropagation();
+    displayTodayTasks();
+  })
+})();
 
 function iterateAndRenderTasks(project) {
   if (displayTracker === "Tasks") {
@@ -109,7 +146,6 @@ function appendTasks(task) {
 
   // Call on function factory to create new P
   newParagraph(task.title, "task-title", taskContainer);
-  console.log(task.deadline);
   const deadlineFormatted = `${format(task.deadline, "eeee")} ${format(task.deadline, "PP")}`;
   newParagraph(deadlineFormatted, "task-deadline", taskContainer);
 
@@ -128,16 +164,6 @@ function appendTasks(task) {
   taskContainer.addEventListener("click", (event) => {
     displayTaskModal(task);
     event.stopPropagation();
-  });
-}
-
-export function displayAllTasks() {
-  listDisplay.innerHTML = "";
-  displayTracker = "Tasks";
-  projectsLibrary.library.forEach((project) => {
-    project.tasks.forEach((task) => {
-      appendTasks(task);
-    });
   });
 }
 

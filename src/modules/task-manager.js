@@ -4,8 +4,6 @@ class Storage {
   }
 }
 
-const projectsLibrary = new Storage("projectsLibrary")
-
 class Project {
   constructor(name) {
     this.name = name;
@@ -34,6 +32,15 @@ class Task {
   addDescription(description) {
     this.description = description;
   }
+
+  assignToProject(assignedProject) {
+    this.assignedProject = assignedProject;
+  }
 }
+
+const projectsLibrary = new Storage("projectsLibrary")
+
+const allTasks = new Project("Tasks")
+projectsLibrary.library.push(allTasks);
 
 export {projectsLibrary, Project, Task};
